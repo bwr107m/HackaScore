@@ -51,9 +51,8 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
         let pw = param.password
 
         const judge = await Judge.findOne({account:UID}).exec()
-
-        if(Object.keys(judge).length == 0)
-            return reply.status(200).send({msg:"User not found"})
+        if(judge === null)
+            return reply.status(200).send({msg:"User '" + UID + "' not found"})
         else if(judge.password === pw)
             return reply.status(200).send({msg:"Access Granted"})
         else
