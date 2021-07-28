@@ -1,0 +1,187 @@
+swagger: '2.0'
+info:
+  description: >-
+    
+  version: 1.0.0
+  title: Hackathon Scoring Project
+host: localhost:8888
+tags:
+  - name: judge
+  - name: score
+schemes:
+  - http
+paths:
+  /judge:
+    post:
+      tags:
+        - judge
+      summary: Add a new judge to system
+      description: ''
+      operationId: addjudge
+      consumes:
+        - application/xml
+        - application/json
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Judge object that needs to be added to the system
+          required: true
+          schema:
+            $ref: '#/definitions/judge'
+      responses:
+        '200':
+          description: success
+  /judge/login:
+    post:
+      tags:
+        - judge
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Judge object that needs to be added to the system
+          required: true
+          schema:
+            $ref: '#/definitions/judge'
+      responses:
+        '200':
+          description: login success
+        '400':
+          description: Invalid username/password supplied
+  /judge/logout:
+    post:
+      tags:
+        - judge
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      produces:
+        - application/xml
+        - application/json
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+  /score/getscore:
+    get:
+      tags:
+        - score
+      summary: Returns a list of score belong to a judge
+      operationId: getScore
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: order placed for purchasing the pet
+          required: true
+          schema:
+            type: object
+            properties:
+              judge:
+                type: string
+                format: string
+              name:
+                type: string
+            xml:
+              name: judge
+      responses:
+        '200':
+          description: successful operation
+  /score/save:
+    post:
+      tags:
+        - score
+      summary: save the temp score
+      description: ''
+      operationId: scoreSave
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: score information
+          required: true
+          schema:
+            $ref: '#/definitions/score'
+      responses:
+        '200':
+          description: save temp success
+  /score/submit:
+    post:
+      tags:
+        - score
+      summary: Place an order for a pet
+      description: ''
+      operationId: scoreSubmit
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: score information
+          required: true
+          schema:
+            $ref: '#/definitions/score'
+      responses:
+        '200':
+          description: Submit Success
+  
+definitions:
+  judge:
+    type: object
+    properties:
+      username:
+        type: string
+        format: string
+      password:
+        type: string
+    xml:
+      name: judge
+  score:
+    type: object
+    properties:
+      rank:
+        type: "integer"
+        format: "int16"
+      team:
+        type: "string"
+      topic:
+        type: "string"
+      maintain:
+        type: "integer"
+        format: "int16"
+      innov:
+        type: "integer"
+        format: "int16"
+      design:
+        type: "integer"
+        format: "int16"
+      skill:
+        type: "integer"
+        format: "int16"
+      demo:
+        type: "integer"
+        format: "int16"
+      totalavg:
+        type: "number"
+        format: "double"
+      comment:
+        type: "string"
+      judge:
+        type: "string"
+      complete:
+        type: "string"
+    xml:
+      name: Category
