@@ -19,11 +19,11 @@ paths:
       description: ''
       operationId: addjudge
       consumes:
-        - application/xml
         - application/json
+        - application/xml
       produces:
-        - application/xml
         - application/json
+        - application/xml
       parameters:
         - in: body
           name: body
@@ -42,8 +42,8 @@ paths:
       description: ''
       operationId: loginUser
       produces:
-        - application/xml
         - application/json
+        - application/xml
       parameters:
         - in: body
           name: body
@@ -64,25 +64,34 @@ paths:
       description: ''
       operationId: logoutUser
       produces:
-        - application/xml
         - application/json
+        - application/xml
       parameters: []
       responses:
         default:
           description: successful operation
-  /score/getscore:
+  /score:
     get:
+      tags:
+        - score
+      summary: Returns all score
+      operationId: getAllScore
+      responses:
+        '200':
+          description: successful operation
+  /score/getscore:
+    post:
       tags:
         - score
       summary: Returns a list of score belong to a judge
       operationId: getScore
       produces:
-        - application/xml
         - application/json
+        - application/xml
       parameters:
         - in: body
           name: body
-          description: order placed for purchasing the pet
+          description: enter 01 ~ 05
           required: true
           schema:
             type: object
@@ -90,18 +99,17 @@ paths:
               judge:
                 type: string
                 format: string
-              name:
-                type: string
+                description: 01~05
             xml:
               name: judge
       responses:
         '200':
           description: successful operation
   /score/save:
-    post:
+    put:
       tags:
         - score
-      summary: save the temp score
+      summary: Save the score already filled
       description: ''
       operationId: scoreSave
       produces:
@@ -118,15 +126,15 @@ paths:
         '200':
           description: save temp success
   /score/submit:
-    post:
+    put:
       tags:
         - score
-      summary: Place an order for a pet
+      summary: Submit the score
       description: ''
       operationId: scoreSubmit
       produces:
-        - application/xml
         - application/json
+        - application/xml
       parameters:
         - in: body
           name: body
@@ -137,7 +145,6 @@ paths:
       responses:
         '200':
           description: Submit Success
-  
 definitions:
   judge:
     type: object
@@ -174,14 +181,25 @@ definitions:
       demo:
         type: "integer"
         format: "int16"
-      totalavg:
+      result:
         type: "number"
         format: "double"
+        description: Total score
       comment:
         type: "string"
       judge:
         type: "string"
+        enum:
+         - "01"
+         - "02"
+         - "03"
+         - "04"
+         - "05"
       complete:
         type: "string"
+        description: Submitted or not
+        enum:
+         - "false"
+         - "true"
     xml:
       name: Category
