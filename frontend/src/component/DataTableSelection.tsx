@@ -36,7 +36,7 @@ const DataTableSelection = () => {
         complete: ''
     };
     const titleList = ['rank', 'name', 'topic'];
-    const scoreList = ['maintain', 'innov', 'design', 'skill', 'demo'];
+    const scoreList = ['maintain', 'innov', 'design', 'skill', 'demo', 'result'];
 
     const [grades, setGrades] = useState([]);
     const [grade, setGrade] = useState(emptyGrade);
@@ -130,7 +130,7 @@ const DataTableSelection = () => {
                 <Column header='Rank' rowSpan={2} style={{ width: '8%' }} sortable />
                 <Column header='Name' rowSpan={2} style={{ width: '15%' }} />
                 <Column header='Topic' rowSpan={2} style={{ width: '15%' }} />
-                <Column header='Score' colSpan={5} />
+                <Column header='Score' colSpan={6} />
                 <Column header='Status' rowSpan={2} style={{ width: '10%' }} />
                 <Column header='' rowSpan={2} style={{ width: '5%' }} />
             </Row>

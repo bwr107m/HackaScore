@@ -4,6 +4,7 @@ import { establishConnection } from './plugins/mongodb'
 import Cat from './models/cat'
 import Judge from './models/judge'
 import Score from './models/score'
+import { calculateOne}  from './calculate'
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger: { prettyPrint: true }
@@ -76,14 +77,16 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
         const postBody:any = request.body
         await Score.updateOne( { "teamId": postBody.teamId, "judgeId":postBody.judgeId } , {$set:postBody.grades}).exec()
 
-        const scores = await Score.find({ judge: '01' }).exec();
+        await calculateOne(postBody)
+        const scores = await Score.find({ "judgeId": postBody.judgeId }).exec()
         return reply.status(200).send({ scores })
     })
 
     server.post('/scores/submit/:judgeId', async (request: FastifyRequest, reply: FastifyReply) => {
         let params:any = request.params
         let judgeId = params.judgeId
-        const scores = await Score.updateMany( { "judge":judgeId } , { "complete":"true" }).exec()
+        await Score.updateMany( { "judgeId":judgeId } , { "complete":"true" }).exec()
+        const scores = await Score.find({}).exec()
         return reply.status(200).send({ scores })
     })
 
