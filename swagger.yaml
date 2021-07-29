@@ -6,38 +6,90 @@ info:
   title: Hackathon Scoring Project
 host: localhost:8888
 tags:
-  - name: judge
-  - name: score
+  - name: scores
+  - name: judges
 schemes:
   - http
 paths:
-  /judge:
-    post:
+  /scores:
+    get:
       tags:
-        - judge
-      summary: Add a new judge to system
-      description: ''
-      operationId: addjudge
-      consumes:
-        - application/json
-        - application/xml
+        - scores
+      summary: Returns all score
+      operationId: getAllScore
+      responses:
+        '200':
+          description: successful operation
+  /scores/{judgeId}:
+    get:
+      tags:
+        - scores
+      summary: Returns a list of score belong to a judgeID
+      operationId: getScoreByJudge
       produces:
         - application/json
         - application/xml
       parameters:
-        - in: body
-          name: body
-          description: Judge object that needs to be added to the system
+        - name: "judgeId"
+          in: "path"
+          description: "ID of team to return (01~05)"
           required: true
-          schema:
-            $ref: '#/definitions/judge'
+          type: "string"
       responses:
         '200':
-          description: success
-  /judge/login:
+          description: successful operation
+  /scores/update:
+    put:
+      tags:
+        - scores
+      summary: Save the score already filled
+      description: ''
+      operationId: scoreSave
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: score information
+          required: true
+          schema:
+            $ref: '#/definitions/score'
+      responses:
+        '200':
+          description: save temp success
+  /scores/submit/{judgeId}:
     post:
       tags:
-        - judge
+        - scores
+      summary: Submit the score
+      operationId: SubmittionWithJudge
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: "judgeId"
+          in: "path"
+          description: "ID of team to return (01~05)"
+          required: true
+          type: "string"
+      responses:
+        '200':
+          description: successful operation
+
+  /judges:
+    get:
+      tags:
+        - judges
+      summary: Return all judges
+      operationId: getAllJudges
+      responses:
+        '200':
+          description: successful operation
+  /judges/login:
+    post:
+      tags:
+        - judges
       summary: Logs user into the system
       description: ''
       operationId: loginUser
@@ -56,10 +108,10 @@ paths:
           description: login success
         '400':
           description: Invalid username/password supplied
-  /judge/logout:
+  /judges/logout:
     post:
       tags:
-        - judge
+        - judges
       summary: Logs out current logged in user session
       description: ''
       operationId: logoutUser
@@ -70,81 +122,6 @@ paths:
       responses:
         default:
           description: successful operation
-  /score:
-    get:
-      tags:
-        - score
-      summary: Returns all score
-      operationId: getAllScore
-      responses:
-        '200':
-          description: successful operation
-  /score/getscore:
-    post:
-      tags:
-        - score
-      summary: Returns a list of score belong to a judge
-      operationId: getScore
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - in: body
-          name: body
-          description: enter 01 ~ 05
-          required: true
-          schema:
-            type: object
-            properties:
-              judge:
-                type: string
-                format: string
-                description: 01~05
-            xml:
-              name: judge
-      responses:
-        '200':
-          description: successful operation
-  /score/save:
-    put:
-      tags:
-        - score
-      summary: Save the score already filled
-      description: ''
-      operationId: scoreSave
-      produces:
-        - application/xml
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          description: score information
-          required: true
-          schema:
-            $ref: '#/definitions/score'
-      responses:
-        '200':
-          description: save temp success
-  /score/submit:
-    put:
-      tags:
-        - score
-      summary: Submit the score
-      description: ''
-      operationId: scoreSubmit
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - in: body
-          name: body
-          description: score information
-          required: true
-          schema:
-            $ref: '#/definitions/score'
-      responses:
-        '200':
-          description: Submit Success
 definitions:
   judge:
     type: object
@@ -159,10 +136,24 @@ definitions:
   score:
     type: object
     properties:
+      teamId:
+        type: "string"
+        enum:
+         - "A"
+         - "B"
+         - "C"
+         - "D"
+         - "E"
+         - "F"
+         - "G"
+         - "H"
+         - "I"
+         - "J"
+         - "K"
       rank:
         type: "integer"
         format: "int16"
-      team:
+      name:
         type: "string"
       topic:
         type: "string"
@@ -187,7 +178,7 @@ definitions:
         description: Total score
       comment:
         type: "string"
-      judge:
+      judgeId:
         type: "string"
         enum:
          - "01"
