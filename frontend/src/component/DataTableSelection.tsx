@@ -23,7 +23,7 @@ const DataTableSelection = () => {
     let emptyGrade: any = {
         _id: null,
         rank: 1,
-        team: '',
+        name: '',
         topic: '',
         maintain: 0,
         innov: 0,
@@ -32,10 +32,10 @@ const DataTableSelection = () => {
         demo: 0,
         result: 0,
         comment: '',
-        judge: '',
+        judgeId: '',
         complete: ''
     };
-    const titleList = ['rank', 'team', 'topic'];
+    const titleList = ['rank', 'name', 'topic'];
     const scoreList = ['maintain', 'innov', 'design', 'skill', 'demo'];
 
     const [grades, setGrades] = useState([]);
@@ -57,7 +57,7 @@ const DataTableSelection = () => {
 
     const saveGrade = () => {
         const gradeServer = new gradesServer();
-        gradeServer.updateGradeForm(grade.team, grade.judge, grade).then((data) => setGrades(data));
+        gradeServer.updateGradeForm(grade.teamId, grade.judgeId, grade).then((data) => setGrades(data));
 
         setGrade(emptyGrade);
         setGradetDialog(false);
@@ -128,7 +128,7 @@ const DataTableSelection = () => {
         <ColumnGroup>
             <Row>
                 <Column header='Rank' rowSpan={2} style={{ width: '8%' }} sortable />
-                <Column header='Team' rowSpan={2} style={{ width: '15%' }} />
+                <Column header='Name' rowSpan={2} style={{ width: '15%' }} />
                 <Column header='Topic' rowSpan={2} style={{ width: '15%' }} />
                 <Column header='Score' colSpan={5} />
                 <Column header='Status' rowSpan={2} style={{ width: '10%' }} />

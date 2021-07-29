@@ -37,20 +37,12 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
         return reply.status(200).send({ cat })
     })
 
-    //純測試用
-    server.get('/judge', async (request: FastifyRequest, reply: FastifyReply) => {
+    server.get('/judges', async (request: FastifyRequest, reply: FastifyReply) => {
         const judges = await Judge.find({}).exec()
         return reply.status(200).send({ judges })
     })
-    
-    // add a new judge
-    server.post('/judge', async (request: FastifyRequest, reply: FastifyReply) => {
-        const postBody = request.body
-        const judge = await Judge.create(postBody)
-        return reply.status(200).send({ judge })
-    })
 
-    server.post('/judge/login', async (request: FastifyRequest, reply: FastifyReply) => {
+    server.post('/judges/login', async (request: FastifyRequest, reply: FastifyReply) => {
         const postBody:any = request.body
         let UID = postBody.username
         let pw = postBody.password
@@ -64,37 +56,34 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
             return reply.status(400).send({msg:"Password not correct"})
     })
 
-    server.post('/judge/logout', async (request: FastifyRequest, reply: FastifyReply) => {
+    server.post('/judges/logout', async (request: FastifyRequest, reply: FastifyReply) => {
         return reply.status(200).send({msg:"Log out success."})
     })
 
-    //純測試用
-    server.get('/score', async (request: FastifyRequest, reply: FastifyReply) => {
-        const scores = await Score.find({ judge: '01' }).exec()
+    server.get('/scores', async (request: FastifyRequest, reply: FastifyReply) => {
+        const scores = await Score.find({}).exec()
         return reply.status(200).send({ scores })
     })
 
-    server.post('/score/getscore', async (request: FastifyRequest, reply: FastifyReply) => {
+    server.get('/scores/:judgeId', async (request: FastifyRequest, reply: FastifyReply) => {
+        let params:any = request.params
+        let judgeId = params.judgeId
+        const scores = await Score.find({"judgeId":judgeId}).exec()
+        return reply.status(200).send({ scores })
+    })
+
+    server.put('/scores/update', async (request: FastifyRequest, reply: FastifyReply) => {
         const postBody:any = request.body
-        let judgenum = postBody.judge
-        const scores = await Score.find({"judge":judgenum}).exec()
-        return reply.status(200).send({ scores })
-    })
-
-    server.put('/score/save', async (request: FastifyRequest, reply: FastifyReply) => {
-        const postBody: any = request.body;
-        await Score.updateOne({ team: postBody._team, judge: postBody._judge }, { $set: postBody._grades });
+        await Score.updateOne( { "teamId": postBody.teamId, "judgeId":postBody.judgeId } , {$set:postBody.grades}).exec()
 
         const scores = await Score.find({ judge: '01' }).exec();
-        return reply.status(200).send({ scores });
+        return reply.status(200).send({ scores })
     })
 
-    server.put('/score/submit', async (request: FastifyRequest, reply: FastifyReply) => {
-        const postBody:any = request.body
-        let judge = postBody.judge
-        let team = postBody.team
-        postBody.complete = "true"
-        const scores = await Score.updateOne( { "judge":judge, "team":team } , {$set:postBody}).exec()
+    server.post('/scores/submit/:judgeId', async (request: FastifyRequest, reply: FastifyReply) => {
+        let params:any = request.params
+        let judgeId = params.judgeId
+        const scores = await Score.updateMany( { "judge":judgeId } , { "complete":"true" }).exec()
         return reply.status(200).send({ scores })
     })
 
