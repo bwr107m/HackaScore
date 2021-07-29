@@ -70,7 +70,7 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
 
     //純測試用
     server.get('/score', async (request: FastifyRequest, reply: FastifyReply) => {
-        const scores = await Score.find({}).exec()
+        const scores = await Score.find({ judge: '01' }).exec()
         return reply.status(200).send({ scores })
     })
 
@@ -82,11 +82,11 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
     })
 
     server.put('/score/save', async (request: FastifyRequest, reply: FastifyReply) => {
-        const postBody:any = request.body
-        let judge = postBody.judge
-        let team = postBody.team
-        const scores = await Score.updateOne( { "judge":judge, "team":team } , {$set:postBody}).exec()
-        return reply.status(200).send({ scores })
+        const postBody: any = request.body;
+        await Score.updateOne({ team: postBody._team, judge: postBody._judge }, { $set: postBody._grades });
+
+        const scores = await Score.find({ judge: '01' }).exec();
+        return reply.status(200).send({ scores });
     })
 
     server.put('/score/submit', async (request: FastifyRequest, reply: FastifyReply) => {
