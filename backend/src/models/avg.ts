@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose'
 
-const scoreSchema: Schema = new Schema(
+const avgSchema: Schema = new Schema(
     {
         _id: { type: Number, required: true },
         teamId: { type: String, required: true },
@@ -14,7 +14,6 @@ const scoreSchema: Schema = new Schema(
         demo: { type: Number, required: false },
         result: { type: Number, required: false },
         comment: { type: String, required: false },
-        judgeId: { type: String, required: true },
         complete: { type: Boolean, required: true },
     },
     {
@@ -22,4 +21,4 @@ const scoreSchema: Schema = new Schema(
     }
 )
 
-export default model("Score", scoreSchema)
+export default model("Avg", avgSchema)

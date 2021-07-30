@@ -85,9 +85,14 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
     server.post('/scores/submit/:judgeId', async (request: FastifyRequest, reply: FastifyReply) => {
         let params:any = request.params
         let judgeId = params.judgeId
-        await Score.updateMany( { "judgeId":judgeId } , { "complete":"true" }).exec()
+        await Score.updateMany( { "judgeId":judgeId } , { "complete":true }).exec()
         const scores = await Score.find({}).exec()
         return reply.status(200).send({ scores })
+    })
+
+    server.get('/scores/avg', async (request: FastifyRequest, reply: FastifyReply) => {
+        const scoresAvg = await Avg.find({}).exec()
+        return reply.status(200).send({ scoresAvg })
     })
 
 
