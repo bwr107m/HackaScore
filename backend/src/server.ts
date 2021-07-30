@@ -4,6 +4,7 @@ import { establishConnection } from './plugins/mongodb'
 import Cat from './models/cat'
 import Judge from './models/judge'
 import Score from './models/score'
+import Avg from './models/avg'
 import { calculateOne}  from './calculate'
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
@@ -86,7 +87,7 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
         let params:any = request.params
         let judgeId = params.judgeId
         await Score.updateMany( { "judgeId":judgeId } , { "complete":true }).exec()
-        const scores = await Score.find({}).exec()
+        const scores = await Score.find({ "judgeId": judgeId }).exec()
         return reply.status(200).send({ scores })
     })
 
@@ -94,7 +95,6 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
         const scoresAvg = await Avg.find({}).exec()
         return reply.status(200).send({ scoresAvg })
     })
-
 
     return server
 }

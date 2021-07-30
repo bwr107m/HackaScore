@@ -23,4 +23,13 @@ export default class Server {
             alert(e);
         }
     }
+
+    async updateUserAuthority(){
+        try{
+            const res = await axios.post('http://localhost:8888/scores/submit/01');
+            return res.data['scores'];
+        } catch (e) {
+            alert(e);
+        }
+    }
 }

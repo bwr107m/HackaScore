@@ -1,5 +1,4 @@
 import './index.css';
-import HeaderBar from './component/HeaderBar';
 import DataTableSelection from './component/DataTableSelection';
 
 import React from 'react';
@@ -7,8 +6,7 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-    <React.StrictMode>
-        <HeaderBar />
+    <React.StrictMode>        
         <DataTableSelection />
     </React.StrictMode>,
     document.getElementById('root')
