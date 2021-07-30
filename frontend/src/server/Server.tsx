@@ -13,11 +13,9 @@ export default class Server {
     async updateGradeForm(teamId: string, judgeId: string, grades: any) {   
         console.log(teamId, judgeId)
         try {
-            const res = await axios.put('http://localhost:8888/scores/update', {
-                teamId: teamId,
-                judgeId: judgeId,
-                grades: grades
-            });
+            grades.teamId = teamId
+            grades.judgeId = judgeId
+            const res = await axios.put('http://localhost:8888/scores/update', grades);
             return res.data['scores'];
         } catch (e) {
             alert(e);
