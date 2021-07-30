@@ -1,0 +1,196 @@
+swagger: '2.0'
+info:
+  description: >-
+    
+  version: 1.0.0
+  title: Hackathon Scoring Project
+host: localhost:8888
+tags:
+  - name: scores
+  - name: judges
+schemes:
+  - http
+paths:
+  /scores:
+    get:
+      tags:
+        - scores
+      summary: Returns all score
+      operationId: getAllScore
+      responses:
+        '200':
+          description: successful operation
+  /scores/{judgeId}:
+    get:
+      tags:
+        - scores
+      summary: Returns a list of score belong to a judgeID
+      operationId: getScoreByJudge
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: "judgeId"
+          in: "path"
+          description: "ID of team to return (01~05)"
+          required: true
+          type: "string"
+      responses:
+        '200':
+          description: successful operation
+  /scores/update:
+    put:
+      tags:
+        - scores
+      summary: Save the score already filled
+      description: ''
+      operationId: scoreSave
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: score information
+          required: true
+          schema:
+            $ref: '#/definitions/score'
+      responses:
+        '200':
+          description: save temp success
+  /scores/submit/{judgeId}:
+    post:
+      tags:
+        - scores
+      summary: Submit the score
+      operationId: SubmittionWithJudge
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: "judgeId"
+          in: "path"
+          description: "ID of team to return (01~05)"
+          required: true
+          type: "string"
+      responses:
+        '200':
+          description: successful operation
+
+  /judges:
+    get:
+      tags:
+        - judges
+      summary: Return all judges
+      operationId: getAllJudges
+      responses:
+        '200':
+          description: successful operation
+  /judges/login:
+    post:
+      tags:
+        - judges
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: body
+          description: Judge object that needs to be added to the system
+          required: true
+          schema:
+            $ref: '#/definitions/judge'
+      responses:
+        '200':
+          description: login success
+        '400':
+          description: Invalid username/password supplied
+  /judges/logout:
+    post:
+      tags:
+        - judges
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      produces:
+        - application/json
+        - application/xml
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+definitions:
+  judge:
+    type: object
+    properties:
+      username:
+        type: string
+        format: string
+      password:
+        type: string
+    xml:
+      name: judge
+  score:
+    type: object
+    properties:
+      teamId:
+        type: "string"
+        enum:
+         - "A"
+         - "B"
+         - "C"
+         - "D"
+         - "E"
+         - "F"
+         - "G"
+         - "H"
+         - "I"
+         - "J"
+         - "K"
+      rank:
+        type: "integer"
+        format: "int16"
+      name:
+        type: "string"
+      topic:
+        type: "string"
+      maintain:
+        type: "integer"
+        format: "int16"
+      innov:
+        type: "integer"
+        format: "int16"
+      design:
+        type: "integer"
+        format: "int16"
+      skill:
+        type: "integer"
+        format: "int16"
+      demo:
+        type: "integer"
+        format: "int16"
+      result:
+        type: "number"
+        format: "double"
+        description: Total score
+      comment:
+        type: "string"
+      judgeId:
+        type: "string"
+        enum:
+         - "01"
+         - "02"
+         - "03"
+         - "04"
+         - "05"
+      complete:
+        type: "string"
+        description: Submitted or not
+        enum:
+         - "false"
+         - "true"
+    xml:
+      name: Category
