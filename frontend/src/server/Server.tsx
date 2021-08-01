@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export default class Server {
-    async getGradeForm() {
+    async getGradeForm(userId:string) {
         try {
-            const res = await axios.get('http://localhost:8888/scores/01');
+            const res = await axios.get('http://localhost:8888/scores/'+userId);
             return res.data['scores'];
         } catch (e) {
             alert(e);

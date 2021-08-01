@@ -11,7 +11,7 @@ ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter>        
           <Route exact path="/" component={Login} />
-          <Route exact path="/DataTableSelection" component={DataTableSelection} />
+          <Route exact path="/DataTableSelection/:username" component={DataTableSelection} />
       </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root')

@@ -19,6 +19,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import './DataTable.css';
 import gradesServer from '../server/Server';
 import React, { useEffect, useState, useRef } from 'react';
+import { useParams } from "react-router-dom";
 
 const DataTableSelection = () => {
     let emptyGrade: any = {
@@ -47,9 +48,13 @@ const DataTableSelection = () => {
 
     const toast = useRef(null);
     
+    let params:any = useParams();
+    let username = params.username;
+    let userId = username.substring(5);
+
     const gradeServer = new gradesServer();
     useEffect(() => {        
-        gradeServer.getGradeForm().then((data) => setGrades(data));
+        gradeServer.getGradeForm(userId).then((data) => setGrades(data));
     }, []);
 
     const hideDialog = () => {
@@ -122,7 +127,7 @@ const DataTableSelection = () => {
 
     const menubar = [
         {
-            label: 'User: 01',
+            label: 'User: ' + username,
             icon: 'pi pi-fw pi-user-edit',
             items: [
                 {
