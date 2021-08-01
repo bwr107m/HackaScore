@@ -1,5 +1,8 @@
 import Score from './models/score'
 import Avg from './models/avg'
+import judge from './models/judge'
+import { GradeModel } from './models/gradeModel'
+import { TeamModel } from './models/teamModel'
 
 const calculateOne = async (obj:any) => {
 
@@ -32,45 +35,58 @@ const calculateOne = async (obj:any) => {
 }
 
 const calculateAll = async () => {
-    const teamId = [ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" ]
-    const col = [ "maintain", "innov", "design", "skill" , "demo", "result" ]
-    const judgenum = 5
+    const oneTeam: TeamModel = {
+        gradeList: []
+    };
 
-    // 每組 各評審的 5個項目+1個總分
-    // let oneTeam = await Score.find({"teamId":teamId[0]}).exec()
-    // let record = oneTeam[0]
-    // let colname = col[0]
-    // console.log(record)
-    // console.log(colname)
-    // console.log("goinghere")
-    // console.log(record[colname])
-    
-    // 每個 team
-    for(let i=0; i<teamId.length; i++){
-        let oneTeam = await Score.find({"teamId":teamId[i]}).exec()
-        // 每個 subject
-        for(let j=0; j<col.length; j++){
-            let sum = 0
-            let commentobj:any = {}
-            // 每個評審
-            for(let k=0; k<judgenum; k++){
-                // 分數加總
-                let record = oneTeam[k]
-                let colname = col[j]
-                sum = sum + record[colname]
-
-                // comment彙整
-                let judgeId = record.judgeId
-                commentobj[judgeId] = record.comment
-            }
-            let avgscore = sum / judgenum
-            let colname = col[j]
-            let obj:any = {}
-            obj[colname] = avgscore
-            obj["comment"] = JSON.stringify(commentobj)
-            await Avg.updateOne( { "teamId":teamId[i] } , {$set:obj}).exec()
-        }
+    const gradeModel: GradeModel = {
+        maintain: Number(),
+        innov: Number(),
+        design: Number(),
+        skill: Number(),
+        demo: Number(),
+        result: Number(),
+        comment: []
     }
+    
+    const teamIdobj = await Avg.find({}, {"teamId":1, "_id":0}).exec()
+    // console.log(teamIdobj)
+    /*
+    teamIdobj = [
+        { teamId: 'A' }, { teamId: 'B' }, { teamId: 'C' }, { teamId: 'D' },
+        { teamId: 'E' }, { teamId: 'F' }, { teamId: 'G' }, { teamId: 'H' },
+        { teamId: 'I' }, { teamId: 'J' }, { teamId: 'K' }
+    ]
+    */
+
+    // 每個 team
+    teamIdobj.forEach(async (team: any) => {
+        oneTeam.gradeList = await Score.find({"teamId":team.teamId}).exec()
+        // oneTeam = [ {評審01的分數物件}, {評審02的分數物件}, {評審03的分數物件}, {評審04的分數物件}, {評審05的分數物件} ]
+        let maintain = 0, innov = 0, design = 0, skill = 0, demo = 0, result = 0
+        let commentAll:string[] = []
+        const judgenum = oneTeam.gradeList.length
+
+        oneTeam.gradeList.forEach((element: any) => {
+            maintain += element.maintain
+            innov += element.innov
+            design += element.design
+            skill += element.skill
+            demo += element.demo 
+            result += element.result
+
+            commentAll.push(element.comment)
+        });
+
+        gradeModel.maintain = maintain / judgenum
+        gradeModel.innov = innov / judgenum
+        gradeModel.design = design /judgenum
+        gradeModel.skill = skill / judgenum
+        gradeModel.demo = demo / judgenum
+        gradeModel.result = result / judgenum
+        gradeModel.comment = commentAll
+        await Avg.updateOne( { "teamId":team.teamId } , {$set:gradeModel}).exec()
+    })
 }
 
 export {calculateOne}

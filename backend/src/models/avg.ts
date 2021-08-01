@@ -13,7 +13,7 @@ const avgSchema: Schema = new Schema(
         skill: { type: Number, required: false },
         demo: { type: Number, required: false },
         result: { type: Number, required: false },
-        comment: { type: String, required: false },
+        comment: { type: [], required: false },
         complete: { type: Boolean, required: true },
     },
     {
