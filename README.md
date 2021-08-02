@@ -16,9 +16,7 @@ node out/index.js
 npm run test
 npm run start
 
-
 ```
-
 
 ## Swagger
 https://editor.swagger.io/
@@ -27,11 +25,13 @@ https://editor.swagger.io/
 https://app.diagrams.net/#Hbwr107m%2FHackaScore%2Fdev%2FScoringUserStory.drawio
 
 ## Resource
-[Create project](https://yubintw.github.io/MERN-basic-practice/)
+Create project:  https://yubintw.github.io/MERN-basic-practice/
 
-[TDD-jest](https://mdes4214.github.io/TDD-jest-slides/export/)
+MERN-demo:  https://github.com/yubinTW/MERN-demo
 
-[Frontend](http://primefaces.org/primereact/showcase/#/menubar)
+demo_x:  https://github.com/yubinTW/demo_x
 
-## Test git push.
+TDD-jest:  https://mdes4214.github.io/TDD-jest-slides/export/
+
+Frontend:  http://primefaces.org/primereact/showcase/#/menubar
 
