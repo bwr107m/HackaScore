@@ -1,6 +1,6 @@
-import { startFastify } from './server'
+import { startFastify } from './server';
 
 // Start your server
-const server = startFastify(8888)
+const server = startFastify(8888);
 
-export { server }
+export { server };
