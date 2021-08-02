@@ -88,6 +88,7 @@ const startFastify: (port: number) => FastifyInstance<Server, IncomingMessage, S
         let params:any = request.params
         let judgeId = params.judgeId
         await Score.updateMany( { "judgeId":judgeId } , { "complete":true }).exec()
+        await calculateAll()
         const scores = await Score.find({ "judgeId": judgeId }).exec()
         return reply.status(200).send({ scores })
     })
