@@ -19,6 +19,10 @@ npm run start
 
 ```
 
+
+## S
+https://editor.swagger.io/
+
 ## Use Case UML
 https://app.diagrams.net/#Hbwr107m%2FHackaScore%2Fdev%2FScoringUserStory.drawio
 
