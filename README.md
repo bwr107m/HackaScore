@@ -20,7 +20,7 @@ npm run start
 ```
 
 
-## S
+## Swagger
 https://editor.swagger.io/
 
 ## Use Case UML
