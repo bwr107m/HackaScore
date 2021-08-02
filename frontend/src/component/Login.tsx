@@ -23,10 +23,12 @@ function LoginApp() {
         //await postData();
         //getData();
         let loginData = await nodeService.getLoginData(addAccount , addPassword);
+        console.log(loginData)
         if(loginData.msg === "login success!")
         {
             //swal.fire('登入成功！',loginData.msg,'success')
-            window.location.href = "/DataTableSelection?account="+addAccount+" & password="+addPassword+""// + loginData._id
+            //window.location.href = "/DataTableSelection?account="+addAccount+" & password="+addPassword+""// + loginData._id
+            window.location.href = "/DataTableSelection/"+ addAccount
         }
         else
         {

@@ -24,18 +24,64 @@ describe('API test', () => {
             console.log(`Failed to close a Fastify server, reason: ${e}`)
         }
     })
- 
-    it('should successfully get a pong string', async () => {
-        const response = await server.inject({ method: 'GET', url: '/ping' })
- 
+
+    it('should successfully get a empty list of judges', async () => {
+        const response = await server.inject({ method: 'GET', url: '/judges' })
         expect(response.statusCode).toBe(200)
-        expect(response.body).toStrictEqual(JSON.stringify({ msg: 'pong' }))
+        expect(response.body).toStrictEqual(JSON.stringify({ judges: [] }))
     })
- 
-    it('should successfully get a empty list of cats', async () => {
-        const response = await server.inject({ method: 'GET', url: '/cats' })
- 
+
+    it('should successfully get a insert-success judge object', async () => {
+        const requestContent:any = {
+            method: 'POST',
+            url: '/judges',
+            payload: {
+              username: 'testjudge01',
+              password: 'testpw'
+            }
+        }
+        const response = await server.inject(requestContent)
         expect(response.statusCode).toBe(200)
-        expect(response.body).toStrictEqual(JSON.stringify({ cats: [] }))
+        let obj = JSON.parse(response.body)
+        let judge = obj.judge
+        expect(judge.username).toStrictEqual("testjudge01")
+        expect(judge.password).toStrictEqual("testpw")
     })
+
+    it('should successfully get a login-success message', async () => {
+        const requestContent:any = {
+            method: 'POST',
+            url: '/judges',
+            payload: {
+              username: 'testjudge01',
+              password: 'testpw'
+            }
+        }
+        const response = await server.inject(requestContent)
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toStrictEqual({msg:"login success!"})
+    })
+
+    it('should successfully get a empty list of scores', async () => {
+        const response = await server.inject({ method: 'GET', url: '/scores' })
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toStrictEqual(JSON.stringify({ scores: [] }))
+    })
+
+    it('should successfully get login message', async () => {
+        const content:any = {
+            method: 'POST',
+            url: '/judges/login',
+            payload: {
+              username: 'judge01',
+              password: 'pw4judge'
+            }
+        }
+        const response = await server.inject(content)
+        //const response = await server.inject({ method: 'POST', url: '/judges/login'})
+        console.log(response.body)
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toStrictEqual(JSON.stringify({ msg:"login success!" }))
+    })
+
 })

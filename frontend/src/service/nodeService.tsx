@@ -47,8 +47,12 @@ export class NodeService {
     async getLoginData(strAccount: string, strPassword: string) {
         try {
             //const res = await axios.get("/loginData/" + strAccount + "/" + strPassword);
-            const res = await axios.get("http://localhost:8888/loginData/" + strAccount + "/" + strPassword);
-            console.log(res);
+            //const res = await axios.get("http://localhost:8888/loginData/" + strAccount + "/" + strPassword);
+            const res = await axios.post("http://localhost:8888/judges/login", {
+                username: strAccount,
+                password: strPassword
+            });
+
             //return res.data.todos;
             return res.data;
         } catch (e) {
