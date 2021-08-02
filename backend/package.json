@@ -6,7 +6,10 @@
   "scripts": {
     "test": "jest --watchAll --verbose --coverage",
     "build": "tsc",
-    "start": "node out/index.js"
+    "start": "node out/index.js",
+    "node-start": "npm run build && npm run start",
+    "prettier": "prettier --list-different \"./{src,test,examples,scripts}/**/*.ts\"",
+    "fix-prettier": "prettier --write \"./{src,test,examples,scripts}/**/*.ts\""
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +18,8 @@
     "fastify": "^3.19.2",
     "fastify-cors": "^6.0.2",
     "mongoose": "^5.13.3",
-    "pino-pretty": "^5.1.2"
+    "pino-pretty": "^5.1.2",
+    "prettier": "^2.3.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
