@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog'
 import { InputNumber } from 'primereact/inputnumber'
 import { InputTextarea } from 'primereact/inputtextarea'
 
-import { useParams } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import React, { useEffect, useState } from 'react'
 
@@ -27,11 +26,6 @@ const PersonalGradeForm = () => {
     comment: '',
   }
 
-  // const params: any = useParams();
-  // const userName = params.username;
-  const [cookies, setCookie] = useCookies(['username'])
-  const userName = cookies.username
-  const userId = userName.substring(5)
   const titleList = ['rank', 'name', 'topic']
   const scoreList = [
     ['maintain', '\n( 15% )'],
@@ -42,6 +36,10 @@ const PersonalGradeForm = () => {
     ['result', ''],
   ]
   const editGradeLogo = ['pi-pencil', 'p-button-success']
+
+  const [cookies, setCookie] = useCookies(['username'])
+  const userName = cookies.username
+  const userId = userName.substring(5)
 
   const [grades, setGrades] = useState([])
   const [grade, setGrade] = useState(emptyGrade)
@@ -94,7 +92,7 @@ const PersonalGradeForm = () => {
 
   return (
     <div className="card">
-      <HeaderBar userName={userName} setGrades={setGrades} isDoneSubmit={false} />
+      <HeaderBar grades={grades} setGrades={setGrades} isDoneSubmit={false} />
       <DataTableSelection
         titleList={titleList}
         scoreList={scoreList}

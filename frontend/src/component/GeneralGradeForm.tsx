@@ -6,7 +6,6 @@ import 'primereact/resources/themes/saga-blue/theme.css'
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 
-import { useParams } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import React, { useEffect, useState } from 'react'
 
@@ -19,11 +18,6 @@ const GeneralGradeForm = () => {
     comment: '',
   }
 
-  // const params: any = useParams();
-  // const userName = params.username;
-  const [cookies, setCookie] = useCookies(['username'])
-  const userName = cookies.username
-  const userId = userName.substring(5)
   const titleList = ['rank', 'name', 'topic']
   const scoreList = [
     ['maintain', '\n( 15% )'],
@@ -34,6 +28,9 @@ const GeneralGradeForm = () => {
     ['result', ''],
   ]
   const showCommentLogo = ['pi-comments', 'p-button-warning']
+
+  const [cookies, setCookie] = useCookies(['username'])
+  const userName = cookies.username
 
   const [grades, setGrades] = useState([])
   const [grade, setGrade] = useState(emptyGrade)
@@ -61,7 +58,7 @@ const GeneralGradeForm = () => {
 
   return (
     <div className="card">
-      <HeaderBar userName={userName} setGrades={setGrades} isDoneSubmit={true} />
+      <HeaderBar setGrades={setGrades} isDoneSubmit={true} />
       <DataTableSelection
         titleList={titleList}
         scoreList={scoreList}
