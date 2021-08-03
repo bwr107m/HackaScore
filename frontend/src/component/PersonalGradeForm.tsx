@@ -9,6 +9,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { InputTextarea } from 'primereact/inputtextarea';
 
 import { useParams } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
 
 import HeaderBar from './HeaderBar';
@@ -26,8 +27,10 @@ const PersonalGradeForm = () => {
         comment: ''        
     };
 
-    const params: any = useParams();
-    const userName = params.username;
+    // const params: any = useParams();
+    // const userName = params.username;
+    const [cookies, setCookie] = useCookies(['username']);
+    const userName = cookies.username;
     const userId = userName.substring(5);
     const titleList = ['rank', 'name', 'topic'];
     const scoreList = [

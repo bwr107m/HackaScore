@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useCookies } from 'react-cookie';
 import 'primeicons/primeicons.css'
 import 'primereact/resources/themes/saga-blue/theme.css'
 import 'primereact/resources/primereact.css'
@@ -16,6 +17,7 @@ function LoginApp() {
   const [addAccount, setAddAccount] = useState<string>('')
   const [addPassword, setAddPassword] = useState<string>('')
   const nodeService = new NodeService()
+  const [cookies, setCookie] = useCookies(['username']);
 
   async function submitLoginData() {
     //await postData();
@@ -25,7 +27,8 @@ function LoginApp() {
     if (loginData.msg === 'login success!') {
       //swal.fire('登入成功！',loginData.msg,'success')
       //window.location.href = "/DataTableSelection?account="+addAccount+" & password="+addPassword+""// + loginData._id
-      window.location.href = '/PersonalGradeForm/' + addAccount
+      setCookie('username', addAccount, { path: '/' });
+      window.location.href = '/PersonalGradeForm/';
     } else {
       swal.fire('登入失敗！', loginData.msg, 'error')
     }

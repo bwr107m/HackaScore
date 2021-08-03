@@ -13,8 +13,8 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Route exact path="/" component={Login} />      
-      <Route exact path="/PersonalGradeForm/:username" component={PersonalGradeForm} />
-      <Route exact path="/GeneralGradeForm/:username" component={GeneralGradeForm} />
+      <Route exact path="/PersonalGradeForm" component={PersonalGradeForm} />
+      <Route exact path="/GeneralGradeForm" component={GeneralGradeForm} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
