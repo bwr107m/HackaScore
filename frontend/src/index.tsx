@@ -12,7 +12,7 @@ import Login from './component/Login'
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Route exact path="/" component={Login} />      
+      <Route exact path="/" component={Login} />
       <Route exact path="/PersonalGradeForm" component={PersonalGradeForm} />
       <Route exact path="/GeneralGradeForm" component={GeneralGradeForm} />
     </BrowserRouter>

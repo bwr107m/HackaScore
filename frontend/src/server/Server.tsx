@@ -19,8 +19,8 @@ export default class Server {
     }
   }
 
-  async updateGradeForm(teamId: string, judgeId: string, grade: any) {    
-    try {      
+  async updateGradeForm(teamId: string, judgeId: string, grade: any) {
+    try {
       const res = await axios.put('http://localhost:8888/scores/' + judgeId + '/' + teamId, grade)
       return res.data['scores']
     } catch (e) {
