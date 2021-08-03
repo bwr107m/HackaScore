@@ -4,14 +4,17 @@ import reportWebVitals from './reportWebVitals'
 import { BrowserRouter, Route } from 'react-router-dom'
 
 import './index.css'
-import DataTableSelection from './component/DataTableSelection'
+//import DataTableSelection1 from './component/DataTableSelection1'
+import PersonalGradeForm from './component/PersonalGradeForm'
+import GeneralGradeForm from './component/GeneralGradeForm'
 import Login from './component/Login'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Route exact path="/" component={Login} />
-      <Route exact path="/DataTableSelection/:username" component={DataTableSelection} />
+      <Route exact path="/" component={Login} />      
+      <Route exact path="/PersonalGradeForm/:username" component={PersonalGradeForm} />
+      <Route exact path="/GeneralGradeForm/:username" component={GeneralGradeForm} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
