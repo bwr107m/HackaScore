@@ -7,7 +7,7 @@ info:
 host: localhost:8888
 tags:
   - name: scores
-  - name: judges
+  - name: users
 schemes:
   - http
 paths:
@@ -20,6 +20,8 @@ paths:
       responses:
         '200':
           description: successful operation
+        '500':
+          description: Something went wrong
   /scores/{judgeId}:
     get:
       tags:
@@ -38,27 +40,8 @@ paths:
       responses:
         '200':
           description: successful operation
-  /scores/update:
-    put:
-      tags:
-        - scores
-      summary: Save the score already filled
-      description: ''
-      operationId: scoreSave
-      produces:
-        - application/xml
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          description: score information
-          required: true
-          schema:
-            $ref: '#/definitions/score'
-      responses:
-        '200':
-          description: save temp success
-  /scores/submit/{judgeId}:
+        '500':
+          description: Something went wrong
     post:
       tags:
         - scores
@@ -76,20 +59,85 @@ paths:
       responses:
         '200':
           description: successful operation
-
-  /judges:
+        '500':
+          description: Something went wrong
+  /scores/{judgeId}/{teamId}:
+    put:
+      tags:
+        - scores
+      summary: Save the score already filled
+      description: ''
+      operationId: scoreSave
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: "judgeId"
+          in: "path"
+          description: "ID of judge to update (01~05)"
+          required: true
+          type: "string"
+        - name: "teamId"
+          in: "path"
+          description: "ID of team to update (A~K)"
+          required: true
+          type: "string"
+        - in: body
+          name: body
+          description: score information
+          required: true
+          schema:
+            $ref: '#/definitions/score'
+      responses:
+        '200':
+          description: save temp success
+        '500':
+          description: Something went wrong
+  /scores/avg:
     get:
       tags:
-        - judges
-      summary: Return all judges
-      operationId: getAllJudges
+        - scores
+      summary: Returns the average score of all
+      operationId: getAvgScore
       responses:
         '200':
           description: successful operation
-  /judges/login:
+        '500':
+          description: Something went wrong
+  /users:
+    get:
+      tags:
+        - users
+      summary: Return all users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: successful operation
+        '500':
+          description: Something went wrong
+    put:
+      tags:
+        - users
+      summary: add a new user
+      description: ''
+      operationId: addUser
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: body
+          description: user object to be added into the system
+          required: true
+          schema:
+            $ref: '#/definitions/user'
+      responses:
+        '200':
+          description: login success
+  /users/login:
     post:
       tags:
-        - judges
+        - users
       summary: Logs user into the system
       description: ''
       operationId: loginUser
@@ -99,19 +147,21 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Judge object that needs to be added to the system
+          description: User information
           required: true
           schema:
-            $ref: '#/definitions/judge'
+            $ref: '#/definitions/user'
       responses:
         '200':
           description: login success
         '400':
           description: Invalid username/password supplied
-  /judges/logout:
+        '500':
+          description: Something went wrong
+  /users/logout:
     post:
       tags:
-        - judges
+        - users
       summary: Logs out current logged in user session
       description: ''
       operationId: logoutUser
@@ -123,7 +173,7 @@ paths:
         default:
           description: successful operation
 definitions:
-  judge:
+  user:
     type: object
     properties:
       username:
@@ -132,7 +182,7 @@ definitions:
       password:
         type: string
     xml:
-      name: judge
+      name: user
   score:
     type: object
     properties:
@@ -192,5 +242,52 @@ definitions:
         enum:
          - "false"
          - "true"
+    xml:
+      name: Category
+  avg:
+    type: object
+    properties:
+      teamId:
+        type: "string"
+        enum:
+         - "A"
+         - "B"
+         - "C"
+         - "D"
+         - "E"
+         - "F"
+         - "G"
+         - "H"
+         - "I"
+         - "J"
+         - "K"
+      rank:
+        type: "integer"
+        format: "int16"
+      name:
+        type: "string"
+      topic:
+        type: "string"
+      maintain:
+        type: "integer"
+        format: "int16"
+      innov:
+        type: "integer"
+        format: "int16"
+      design:
+        type: "integer"
+        format: "int16"
+      skill:
+        type: "integer"
+        format: "int16"
+      demo:
+        type: "integer"
+        format: "int16"
+      result:
+        type: "number"
+        format: "double"
+        description: Total score
+      comment:
+        type: "string"
     xml:
       name: Category

@@ -1,77 +1,70 @@
-import Score from './models/score'
-import Avg from './models/avg'
+import { ScoreRepoImpl } from './repo/score-repo';
+import { AvgRepoImpl } from './repo/avg-repo';
 
-const calculateOne = async (obj:any) => {
+const calculateOne = async (judgeId: string, teamId: string) => {
+    const ScoreRepo: ScoreRepoImpl = ScoreRepoImpl.of();
+    const record = await ScoreRepo.getSingleScore(judgeId, teamId);
 
-    let judgeId = obj.judgeId
-    let teamId = obj.teamId
-    const onejudge = await Score.findOne({"judgeId":judgeId, "teamId":teamId}).exec()
-    
     // 計算update的隊伍的總分
-    let total = 0
-    total = onejudge.maintain * 0.15 + onejudge.innov * 0.15 + onejudge.design * 0.35 + onejudge.skill * 0.2 + onejudge.demo * 0.15
-    onejudge.result = total
-    await Score.updateOne( { "teamId": teamId, "judgeId":judgeId } , {$set:{"result":total}}).exec()
+    let total = 0;
+    total =
+        record.maintain * 0.15 + record.innov * 0.15 + record.design * 0.35 + record.skill * 0.2 + record.demo * 0.15;
+    record.result = total;
+    await ScoreRepo.updateScore(judgeId, teamId, record);
 
     // 更新所有排名
-    const scoreArray = await Score.find({"judgeId":judgeId}).exec()
+    const scoreArray = await ScoreRepo.getScoresByJudge(judgeId);
     scoreArray.sort(function (a: any, b: any) {
         return b.result - a.result;
     });
 
-    for (let i=0; i<scoreArray.length; i++){
-        scoreArray[i].rank = i+1
-    }
-    
-    for (let i=0; i<scoreArray.length; i++){
-        let tmpjudge = scoreArray[i].judgeId
-        let tmpteam = scoreArray[i].teamId
-        let tmprank = scoreArray[i].rank
-        await Score.updateOne( { "judgeId":tmpjudge, "teamId":tmpteam } , {$set:{"rank":tmprank }}).exec()
-    }
-}
+    let ranknum = 1;
+    scoreArray.forEach(async (team) => {
+        team.rank = ranknum++;
+        await ScoreRepo.updateScore(team.judgeId, team.teamId, team);
+    });
+};
 
 const calculateAll = async () => {
-    const teamId = [ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" ]
-    const col = [ "maintain", "innov", "design", "skill" , "demo", "result" ]
-    const judgenum = 5
+    const ScoreRepo: ScoreRepoImpl = ScoreRepoImpl.of();
+    const AvgRepo: AvgRepoImpl = AvgRepoImpl.of();
 
-    // 每組 各評審的 5個項目+1個總分
-    // let oneTeam = await Score.find({"teamId":teamId[0]}).exec()
-    // let record = oneTeam[0]
-    // let colname = col[0]
-    // console.log(record)
-    // console.log(colname)
-    // console.log("goinghere")
-    // console.log(record[colname])
-    
+    const teamIdarray = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+
     // 每個 team
-    for(let i=0; i<teamId.length; i++){
-        let oneTeam = await Score.find({"teamId":teamId[i]}).exec()
-        // 每個 subject
-        for(let j=0; j<col.length; j++){
-            let sum = 0
-            let commentobj:any = {}
-            // 每個評審
-            for(let k=0; k<judgenum; k++){
-                // 分數加總
-                let record = oneTeam[k]
-                let colname = col[j]
-                sum = sum + record[colname]
+    teamIdarray.forEach(async (teamId: string) => {
+        const gradeList = await ScoreRepo.getScoresByTeam(teamId);
+        // gradeList = [ {評審01的分數物件}, {評審02的分數物件}, {評審03的分數物件}, {評審04的分數物件}, {評審05的分數物件} ]
+        const grade = await AvgRepo.getSingleAvg(teamId);
+        let maintain = 0;
+        let innov = 0;
+        let design = 0;
+        let skill = 0;
+        let demo = 0;
+        let result = 0;
+        let commentAll: string[] = [];
+        const judgenum = gradeList.length;
 
-                // comment彙整
-                let judgeId = record.judgeId
-                commentobj[judgeId] = record.comment
-            }
-            let avgscore = sum / judgenum
-            let colname = col[j]
-            let obj:any = {}
-            obj[colname] = avgscore
-            obj["comment"] = JSON.stringify(commentobj)
-            await Avg.updateOne( { "teamId":teamId[i] } , {$set:obj}).exec()
-        }
-    }
-}
+        gradeList.forEach((element: any) => {
+            maintain += element.maintain;
+            innov += element.innov;
+            design += element.design;
+            skill += element.skill;
+            demo += element.demo;
+            result += element.result;
 
-export {calculateOne}
-export {calculateAll}
+            commentAll.push(element.comment);
+        });
+
+        grade.maintain = maintain / judgenum;
+        grade.innov = innov / judgenum;
+        grade.design = design / judgenum;
+        grade.skill = skill / judgenum;
+        grade.demo = demo / judgenum;
+        grade.result = result / judgenum;
+        grade.comment = commentAll;
+        await AvgRepo.updateAvg(teamId, grade);
+    });
+};
+
+export { calculateOne, calculateAll };
