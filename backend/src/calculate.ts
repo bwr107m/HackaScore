@@ -22,6 +22,7 @@ const calculateOne = async (judgeId: string, teamId: string) => {
     scoreArray.forEach(async (team) => {
         team.rank = ranknum++;
         await ScoreRepo.updateScore(team.judgeId, team.teamId, team);
+        //console.log(team.rank);
     });
 };
 
@@ -32,10 +33,17 @@ const calculateAll = async () => {
     const teamIdarray = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
 
     // 每個 team
-    teamIdarray.forEach(async (teamId: string) => {
+    let flag = 1;
+    //teamIdarray.forEach(async (teamId: string) => {
+    // 可以使用array.map改寫
+    for (let i = 0; i < teamIdarray.length; i++) {
+        let teamId = teamIdarray[i];
+        // console.log("I am 1 " + flag);
         const gradeList = await ScoreRepo.getScoresByTeam(teamId);
         // gradeList = [ {評審01的分數物件}, {評審02的分數物件}, {評審03的分數物件}, {評審04的分數物件}, {評審05的分數物件} ]
         const grade = await AvgRepo.getSingleAvg(teamId);
+        // console.log("I am 2 " +flag);
+        flag++;
         let maintain = 0;
         let innov = 0;
         let design = 0;
@@ -64,7 +72,7 @@ const calculateAll = async () => {
         grade.result = result / judgenum;
         grade.comment = commentAll;
         await AvgRepo.updateAvg(teamId, grade);
-    });
+    }
 };
 
 export { calculateOne, calculateAll };
