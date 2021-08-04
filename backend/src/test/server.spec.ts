@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, InjectOptions } from 'fastify';
 import { startFastify } from '../server';
 import { Server, IncomingMessage, ServerResponse } from 'http';
 import * as dbHandler from './db';
@@ -7,12 +7,20 @@ describe('API test', () => {
     let server: FastifyInstance<Server, IncomingMessage, ServerResponse>;
 
     beforeAll(async () => {
-        await dbHandler.connect();
-        server = startFastify(8888);
+        try {
+            await dbHandler.connect();
+            server = startFastify(8888);
+        } catch (error) {
+            console.error(`Server start err: ${error}`);
+        }
     });
 
     afterEach(async () => {
-        await dbHandler.clearDatabase();
+        try {
+            await dbHandler.clearDatabase();
+        } catch (error) {
+            console.error(`ClearDatabase err: ${error}`);
+        }
     });
 
     afterAll(async () => {
@@ -20,20 +28,22 @@ describe('API test', () => {
             await dbHandler.closeDatabase();
             server.close((): void => {});
             console.log('Closing Fastify server is done!');
-        } catch (e) {
-            console.log(`Failed to close a Fastify server, reason: ${e}`);
+        } catch (error) {
+            console.log(`Failed to close a Fastify server, reason: ${error}`);
         }
     });
 
+    // User GET API
     it('should successfully get a empty list of users', async () => {
         const response = await server.inject({ method: 'GET', url: '/users' });
         expect(response.statusCode).toBe(200);
         expect(response.body).toStrictEqual(JSON.stringify({ users: [] }));
     });
 
+    // User PUT APi
     it('should successfully get a insert-success user object', async () => {
-        const requestContent: any = {
-            method: 'POST',
+        const requestContent: InjectOptions = {
+            method: 'PUT',
             url: '/users',
             payload: {
                 username: 'testjudge01',
@@ -49,7 +59,7 @@ describe('API test', () => {
     });
 
     it('should successfully get a login-success message', async () => {
-        const requestContent: any = {
+        const requestContent: InjectOptions = {
             method: 'POST',
             url: '/users',
             payload: {
@@ -59,7 +69,7 @@ describe('API test', () => {
         };
         await server.inject(requestContent);
 
-        const loginContent: any = {
+        const loginContent: InjectOptions = {
             method: 'POST',
             url: '/users/login',
             payload: {

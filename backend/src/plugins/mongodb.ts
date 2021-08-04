@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import * as dotEnv from 'dotenv';
+import { InitCollection } from './dbsetup';
 
 dotEnv.config();
 const host = process.env.MONGO_HOST || 'localhost';
@@ -12,8 +13,10 @@ const establishConnection = () => {
             `mongodb://${host}:${port}/${database}`,
             { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
             (err) => {
-                if (!err) console.log('MongoDB connection successful.');
-                else console.log('Error in DB connection : ' + JSON.stringify(err, undefined, 2));
+                if (!err) {
+                    console.log('MongoDB connection successful.');
+                    InitCollection();
+                } else console.log('Error in DB connection : ' + JSON.stringify(err, undefined, 2));
             }
         );
     } else {

@@ -2,7 +2,6 @@ import { model, Schema } from 'mongoose';
 
 const avgSchema: Schema = new Schema(
     {
-        _id: { type: Number, required: true },
         teamId: { type: String, required: true },
         rank: { type: Number },
         name: { type: String, required: true },
