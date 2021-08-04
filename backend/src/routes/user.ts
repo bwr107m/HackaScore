@@ -11,7 +11,7 @@ const UserRouter = (server: FastifyInstance, opts: RouteShorthandOptions, done: 
     });
 
     // add a new user
-    server.post('/users', async (request, reply) => {
+    server.put('/users', async (request, reply) => {
         const postBody: IUser = request.body as IUser;
         const user = await UserRepo.addUser(postBody);
         return reply.status(200).send({ user });
