@@ -82,13 +82,28 @@ const ScoreRouter = (server: FastifyInstance, opts: RouteShorthandOptions, done:
     });
 
     server.get('/scores/avg', async (request, reply) => {
-        try {
-            await calculateAll();
-            const scoresAvg = await AvgRepo.getAvgs();
-            return reply.status(200).send({ scoresAvg });
-        } catch (error) {
-            console.error(`GET /scores/avg ${error}`);
-            return reply.status(500).send({ msg: `Something went wrong` });
+        let token = request.headers["x-access-token"];
+
+        if (!token) {
+            return reply.status(403).send({ message: "No token provided!" });
+        }
+
+        jwt.verify(token, config.secret, (err: any) => {    //type 'any' for err should be strange.
+            if (err) {
+            return reply.status(401).send({ message: "Unauthorized!" });
+            }
+        });
+
+//        if(authJwt.verifyToken(request, reply))
+        {
+            try {
+                await calculateAll();
+                const scoresAvg = await AvgRepo.getAvgs();
+                return reply.status(200).send({ scoresAvg });
+            } catch (error) {
+                console.error(`GET /scores/avg ${error}`);
+                return reply.status(500).send({ msg: `Something went wrong` });
+            }
         }
     });
 

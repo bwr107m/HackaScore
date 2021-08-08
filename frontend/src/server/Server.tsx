@@ -13,7 +13,7 @@ export default class Server {
 
   async getGeneralGradeForm() {
     try {
-      const res = await axios.get('http://localhost:8888/scores/avg')
+      const res = await axios.get('http://localhost:8888/scores/avg', { headers: authHeader() })
       return res.data['scoresAvg']
     } catch (e) {
       alert(e)
