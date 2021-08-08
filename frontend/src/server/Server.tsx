@@ -1,9 +1,10 @@
 import axios from 'axios'
+import authHeader from './auth-header'
 
 export default class Server {
   async getPersonalGradeForm(userId: string) {
     try {
-      const res = await axios.get('http://localhost:8888/scores/' + userId)
+      const res = await axios.get('http://localhost:8888/scores/' + userId, { headers: authHeader() })
       return res.data['scores']
     } catch (e) {
       alert(e)

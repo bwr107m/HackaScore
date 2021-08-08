@@ -2,6 +2,8 @@ import { FastifyInstance, RouteShorthandOptions, FastifyRequest, FastifyReply } 
 import { IUser } from '../types/user';
 import { UserRepoImpl } from '../repo/user-repo';
 
+const config = require("../config/auth.config");
+
 const UserRouter = (server: FastifyInstance, opts: RouteShorthandOptions, done: (error?: Error) => void) => {
     const UserRepo: UserRepoImpl = UserRepoImpl.of();
 
@@ -24,11 +26,22 @@ const UserRouter = (server: FastifyInstance, opts: RouteShorthandOptions, done: 
 
         const user = await UserRepo.getSingleUser(UID);
         if (user === null) {
-            return reply.status(205).send({ msg: 'User ' + UID + ' not found' });
+            return reply.status(205).send({ 
+                accessToken: null,
+                msg: 'User ' + UID + ' not found' });
         } else if (user.password === pw) {
-            return reply.status(200).send({ msg: 'login success!' });
+            var jwt = require("jsonwebtoken");
+            var token = jwt.sign({ id: user._id }, config.secret, {
+                expiresIn: 86400 // 24 hours
+              });
+
+            return reply.status(200).send({ 
+                accessToken: token,
+                msg: 'login success!' });
         } else {
-            return reply.status(206).send({ msg: 'Password not correct' });
+            return reply.status(206).send({ 
+                accessToken: null,
+                msg: 'Password not correct' });
         }
     });
 

@@ -28,6 +28,9 @@ function LoginApp() {
       //swal.fire('登入成功！',loginData.msg,'success')
       //window.location.href = "/DataTableSelection?account="+addAccount+" & password="+addPassword+""// + loginData._id
       setCookie('username', addAccount, { path: '/' })
+      if (loginData.accessToken) {  //Save token.
+        localStorage.setItem("user", JSON.stringify(loginData));
+      }
       window.location.href = '/PersonalGradeForm/'
     } else {
       swal.fire('登入失敗！', loginData.msg, 'error')

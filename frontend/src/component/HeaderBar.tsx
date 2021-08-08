@@ -18,6 +18,7 @@ const HeaderBar = (props: any) => {
 
   const turnToLoginPage = () => {
     window.location.href = '/'
+    localStorage.removeItem("user")
     cookies.remove('username')
   }
 

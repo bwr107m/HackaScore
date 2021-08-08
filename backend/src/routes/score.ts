@@ -7,6 +7,10 @@ import { calculateAll } from '../calculate';
 import { ScoreRepoImpl } from '../repo/score-repo';
 import { AvgRepoImpl } from '../repo/avg-repo';
 
+//const { authJwt } = require("../middlewares/authJwt");
+const jwt = require("jsonwebtoken");
+const config = require("../config/auth.config.js");
+
 const ScoreRouter = (server: FastifyInstance, opts: RouteShorthandOptions, done: (error?: Error) => void) => {
     const ScoreRepo: ScoreRepoImpl = ScoreRepoImpl.of();
     const AvgRepo: AvgRepoImpl = AvgRepoImpl.of();
@@ -53,12 +57,27 @@ const ScoreRouter = (server: FastifyInstance, opts: RouteShorthandOptions, done:
 
     server.get<{ Params: IParams }>('/scores/:judgeId', opts, async (request, reply) => {
         const judgeId: string = request.params.judgeId;
-        try {
-            const scores = await ScoreRepo.getScoresByJudge(judgeId);
-            return reply.status(200).send({ scores });
-        } catch (error) {
-            console.error(`GET /scores/:judgeId Error: ${error}`);
-            return reply.status(500).send({ msg: `Something went wrong` });
+        let token = request.headers["x-access-token"];
+
+        if (!token) {
+            return reply.status(403).send({ message: "No token provided!" });
+        }
+
+        jwt.verify(token, config.secret, (err: any) => {    //type 'any' for err should be strange.
+            if (err) {
+            return reply.status(401).send({ message: "Unauthorized!" });
+            }
+        });
+
+//        if(authJwt.verifyToken(request, reply))
+        {
+            try {
+                const scores = await ScoreRepo.getScoresByJudge(judgeId);
+                return reply.status(200).send({ scores });
+            } catch (error) {
+                console.error(`GET /scores/:judgeId Error: ${error}`);
+                return reply.status(500).send({ msg: `Something went wrong` });
+            }
         }
     });
 
